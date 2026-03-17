@@ -55,7 +55,7 @@ const SubjectsList = () => {
                 size: 300,
                 header: () => <p className='column-title'>Description</p>,
                 cell: ({ getValue }) => <span
-                    className='text-foreground truncate, line-clamp-2'>{getValue<string>()}</span>
+                    className='text-foreground truncate line-clamp-2'>{getValue<string>()}</span>
 
             }
         ], []),
