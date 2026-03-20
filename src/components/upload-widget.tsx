@@ -32,6 +32,10 @@ const UploadWidget = ({ value = null, onChange, disabled = false }) => {
                 maxFileSize: 5000000,
                 clientAllowedFormats: ['png', 'jpg', 'jpeg', 'webp']
             }, (error, result) => {
+                if (error) {
+                    console.error('Cloudinary upload error:', error);
+                    return;
+                }
                 if (!error && result.event === 'success') {
                     const payload: UploadWidgetValue = {
                         url: result.info.secure_url,
