@@ -17,6 +17,16 @@ export type ListResponse<T = unknown> = {
     };
 };
 
+export type ClassRecord = {
+    id: number;
+    name: string;
+    bannerUrl?: string;
+    status: 'Active' | 'Inactive';
+    capacity?: number;
+    subject?: { name: string } | null;
+    teacher?: { name: string } | null;
+};
+
 export type CreateResponse<T = unknown> = {
     data?: T;
 };
@@ -99,7 +109,7 @@ export type ClassDetails = {
     id: number;
     name: string;
     description: string;
-    status: "active" | "inactive";
+    status: "Active" | "Inactive";
     capacity: number;
     courseCode: string;
     courseName: string;

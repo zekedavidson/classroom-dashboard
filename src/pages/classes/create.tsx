@@ -23,7 +23,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea.tsx";
 import { FileDiff, Loader2 } from "lucide-react";
 import UploadWidget from "@/components/upload-widget";
-import { Subject, User } from "@/types/index.js";
+import { Subject, User, UploadWidgetValue } from "@/types/index.js";
 
 
 const Create = () => {
@@ -128,16 +128,16 @@ const Create = () => {
                                                 <span className="text-orange-600">*</span>
                                             </FormLabel>
                                             <FormControl>
-                                                <UploadWidget value={field.value ? {
-                                                    url: field.value,
-                                                    publicId: bannerPublicId ?? ''
-                                                } : null} onChange={(file: any) =>
+                                                <UploadWidget value={(field.value ? {
+                                                    url: String(field.value),
+                                                    publicId: String(bannerPublicId ?? '')
+                                                } : null) as UploadWidgetValue | null} onChange={(file: any) =>
                                                     setBannerImage(file, field)} />
                                             </FormControl>
                                             <FormMessage />
                                             {errors.bannerCldPubId && !errors.bannerUrl && (
                                                 <p className="text-destructive text-sm">
-                                                    {errors.bannerCldPubId.message.toString()}
+                                                    {errors.bannerCldPubId?.message?.toString()}
                                                 </p>
                                             )}
                                         </FormItem>

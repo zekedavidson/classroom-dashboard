@@ -1,5 +1,3 @@
-"use client";
-
 import type { PropsWithChildren } from "react";
 
 import { CreateButton } from "@/components/refine-ui/buttons/create";
