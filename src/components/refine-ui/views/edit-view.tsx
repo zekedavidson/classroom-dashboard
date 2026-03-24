@@ -1,3 +1,5 @@
+"use client";
+
 import { RefreshButton } from "@/components/refine-ui/buttons/refresh";
 import { Breadcrumb } from "@/components/refine-ui/layout/breadcrumb";
 import { Button } from "@/components/ui/button";

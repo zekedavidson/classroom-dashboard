@@ -1,3 +1,5 @@
+"use client";
+
 import type { PropsWithChildren } from "react";
 
 import { RefreshButton } from "@/components/refine-ui/buttons/refresh";
