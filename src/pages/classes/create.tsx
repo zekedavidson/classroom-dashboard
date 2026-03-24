@@ -1,7 +1,7 @@
 import { CreateView } from "@/components/refine-ui/views/create-view.tsx";
 import { Breadcrumb } from "@/components/refine-ui/layout/breadcrumb.tsx";
 import { Button } from "@/components/ui/button.tsx";
-import { useBack } from "@refinedev/core";
+import { useBack, useList } from "@refinedev/core";
 import { Separator } from "@/components/ui/separator.tsx";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card.tsx"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -19,11 +19,11 @@ import {
     FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label.tsx";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select.tsx";
 import { Textarea } from "@/components/ui/textarea.tsx";
 import { FileDiff, Loader2 } from "lucide-react";
 import UploadWidget from "@/components/upload-widget";
+import { Subject, User } from "@/types/index.js";
 
 
 const Create = () => {
@@ -38,6 +38,7 @@ const Create = () => {
     });
 
     const {
+        refineCore: { onFinish },
         handleSubmit,
         formState: { isSubmitting, errors },
         control,
@@ -45,35 +46,35 @@ const Create = () => {
 
     const onSubmit = async (values: z.infer<typeof classSchema>) => {
         try {
+            await onFinish(values);
             console.log(values);
         } catch (error) {
             console.error("Error creating class:", error);
         }
     };
 
-    const teachers = [
-        {
-            id: 1,
-            name: "John Doe",
-        },
-        {
-            id: 2,
-            name: "Jane Doe",
-        },
-    ];
+    const { query: subjectsQuery } = useList<Subject>({
+        resource: 'subjects',
+        pagination: {
+            pageSize: 100
+        }
+    })
 
-    const subjects = [
-        {
-            id: 1,
-            name: "Math",
-            code: "MATH",
-        },
-        {
-            id: 2,
-            name: "English",
-            code: "ENG",
-        },
-    ];
+    const { query: teachersQuery } = useList<User>({
+        resource: 'users',
+        filters: [
+            { field: 'role', operator: 'eq', value: 'teacher' }
+        ],
+        pagination: {
+            pageSize: 100
+        }
+    })
+
+    const subjects = subjectsQuery?.data?.data || [];
+    const subjectsLoading = subjectsQuery.isLoading;
+
+    const teachers = teachersQuery?.data?.data || [];
+    const teachersLoading = teachersQuery.isLoading;
 
     const bannerPublicId = form.watch('bannerCldPubId')
 
@@ -176,6 +177,7 @@ const Create = () => {
                                                         field.onChange(Number(value))
                                                     }
                                                     value={field.value?.toString()}
+                                                    disabled={subjectsLoading}
                                                 >
                                                     <FormControl>
                                                         <SelectTrigger className="w-full">
@@ -209,6 +211,7 @@ const Create = () => {
                                                 <Select
                                                     onValueChange={field.onChange}
                                                     value={field.value}
+                                                    disabled={teachersLoading}
                                                 >
                                                     <FormControl>
                                                         <SelectTrigger className="w-full">
