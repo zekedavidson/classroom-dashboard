@@ -2,14 +2,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { useGetIdentity } from "@refinedev/core";
+import { User as UserIcon } from "lucide-react";
 
 type User = {
-  id: number;
-  firstName: string;
-  lastName: string;
-  fullName: string;
+  id: string;
+  name: string;
   email: string;
   avatar?: string;
+  role?: string;
 };
 
 export function UserAvatar() {
@@ -19,12 +19,19 @@ export function UserAvatar() {
     return <Skeleton className={cn("h-10", "w-10", "rounded-full")} />;
   }
 
-  const { fullName, avatar } = user;
+  const { name, avatar } = user;
+  const initials = getInitials(name);
 
   return (
-    <Avatar className={cn("h-10", "w-10")}>
-      {avatar && <AvatarImage src={avatar} alt={fullName} />}
-      <AvatarFallback>{getInitials(fullName)}</AvatarFallback>
+    <Avatar className={cn("h-10", "w-10", "border", "border-border")}>
+      {avatar && <AvatarImage src={avatar} alt={name} />}
+      <AvatarFallback className="flex flex-col items-center justify-center bg-muted">
+        {initials ? (
+          <span className="text-xs font-bold leading-none">{initials}</span>
+        ) : (
+          <UserIcon className="h-5 w-5 text-muted-foreground" />
+        )}
+      </AvatarFallback>
     </Avatar>
   );
 }

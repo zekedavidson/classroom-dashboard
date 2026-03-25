@@ -13,7 +13,8 @@ import { Search } from 'lucide-react'
 import React, { useMemo, useState } from 'react'
 import { ClassRecord } from '@/types'
 import { ShowButton } from '@/components/refine-ui/buttons/show'
-
+import { EditButton } from '@/components/refine-ui/buttons/edit'
+import { DeleteButton } from '@/components/refine-ui/buttons/delete'
 const ClassesList = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedSubject, setSelectedSubject] = useState('all');
@@ -125,10 +126,37 @@ const ClassesList = () => {
                 }
             },
             {
-                id: 'details',
-                size: 140,
-                header: () => <p className='column-title'>Details</p>,
-                cell: ({ row }) => <ShowButton resource='classes' recordItemId={row.original.id} variant='outline' size='sm'>View</ShowButton>
+                id: "actions",
+                size: 200,
+                header: () => <p className="column-title">Actions</p>,
+                cell: ({ row }) => (
+                    <div className="flex items-center gap-2">
+                        <ShowButton
+                            resource="classes"
+                            recordItemId={row.original.id}
+                            variant="outline"
+                            size="sm"
+                        >
+                            View
+                        </ShowButton>
+                        <EditButton
+                            resource="classes"
+                            recordItemId={row.original.id}
+                            variant="outline"
+                            size="sm"
+                        >
+                            Edit
+                        </EditButton>
+                        <DeleteButton
+                            resource="classes"
+                            recordItemId={row.original.id}
+                            variant="outline"
+                            size="sm"
+                        >
+                            Delete
+                        </DeleteButton>
+                    </div>
+                ),
             }
         ], []),
         refineCoreProps: {

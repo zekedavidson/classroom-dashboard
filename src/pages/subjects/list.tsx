@@ -1,4 +1,7 @@
 import { CreateButton } from '@/components/refine-ui/buttons/create'
+import { ShowButton } from '@/components/refine-ui/buttons/show'
+import { EditButton } from '@/components/refine-ui/buttons/edit'
+import { DeleteButton } from '@/components/refine-ui/buttons/delete'
 import { DataTable } from '@/components/refine-ui/data-table/data-table'
 import { Breadcrumb } from '@/components/refine-ui/layout/breadcrumb'
 import { ListView } from '@/components/refine-ui/views/list-view'
@@ -56,7 +59,39 @@ const SubjectsList = () => {
                 header: () => <p className='column-title'>Description</p>,
                 cell: ({ getValue }) => <span
                     className='text-foreground truncate line-clamp-2'>{getValue<string>()}</span>
-
+            },
+            {
+                id: "actions",
+                size: 200,
+                header: () => <p className="column-title">Actions</p>,
+                cell: ({ row }) => (
+                    <div className="flex items-center gap-2">
+                        <ShowButton
+                            resource="subjects"
+                            recordItemId={row.original.id}
+                            variant="outline"
+                            size="sm"
+                        >
+                            View
+                        </ShowButton>
+                        <EditButton
+                            resource="subjects"
+                            recordItemId={row.original.id}
+                            variant="outline"
+                            size="sm"
+                        >
+                            Edit
+                        </EditButton>
+                        <DeleteButton
+                            resource="subjects"
+                            recordItemId={row.original.id}
+                            variant="outline"
+                            size="sm"
+                        >
+                            Delete
+                        </DeleteButton>
+                    </div>
+                ),
             }
         ], []),
         refineCoreProps: {

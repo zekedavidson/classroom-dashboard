@@ -4,12 +4,11 @@ import { cn } from "@/lib/utils";
 import { useGetIdentity } from "@refinedev/core";
 
 type User = {
-  id: number;
-  firstName: string;
-  lastName: string;
-  fullName: string;
+  id: string;
+  name: string;
   email: string;
   avatar?: string;
+  role?: string;
 };
 
 export function UserInfo() {
@@ -27,7 +26,7 @@ export function UserInfo() {
     );
   }
 
-  const { firstName, lastName, email } = user;
+  const { name, email } = user;
 
   return (
     <div className={cn("flex", "items-center", "gap-x-2")}>
@@ -42,7 +41,7 @@ export function UserInfo() {
         )}
       >
         <span className={cn("text-sm", "font-medium", "text-muted-foreground")}>
-          {firstName} {lastName}
+          {name}
         </span>
         <span className={cn("text-xs", "text-muted-foreground")}>{email}</span>
       </div>

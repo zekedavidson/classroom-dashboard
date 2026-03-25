@@ -12,69 +12,59 @@ import { ShowButton } from "@/components/refine-ui/buttons/show";
 import { EditButton } from "@/components/refine-ui/buttons/edit";
 import { DeleteButton } from "@/components/refine-ui/buttons/delete";
 import { CreateButton } from "@/components/refine-ui/buttons/create";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-type DepartmentListItem = {
-    id: number;
+type UserListItem = {
+    id: string;
     name: string;
-    code?: string | null;
-    description?: string | null;
-    totalSubjects?: number | null;
+    email: string;
+    role: string;
+    image?: string | null;
+    createdAt?: string | null;
 };
 
-const DepartmentsList = () => {
+const getInitials = (name = "") => {
+    const parts = name.trim().split(" ").filter(Boolean);
+    if (parts.length === 0) return "";
+    if (parts.length === 1) return parts[0][0]?.toUpperCase() ?? "";
+    return `${parts[0][0] ?? ""}${parts[parts.length - 1][0] ?? ""}`.toUpperCase();
+};
+
+const UsersList = () => {
     const [searchQuery, setSearchQuery] = useState("");
 
-    const departmentColumns = useMemo<ColumnDef<DepartmentListItem>[]>(
+    const userColumns = useMemo<ColumnDef<UserListItem>[]>(
         () => [
-            {
-                id: "code",
-                accessorKey: "code",
-                size: 120,
-                header: () => <p className="column-title ml-2">Code</p>,
-                cell: ({ getValue }) => {
-                    const code = getValue<string>();
-
-                    return code ? (
-                        <Badge>{code}</Badge>
-                    ) : (
-                        <span className="text-muted-foreground ml-2">No code</span>
-                    );
-                },
-            },
             {
                 id: "name",
                 accessorKey: "name",
-                size: 220,
-                header: () => <p className="column-title">Name</p>,
-                cell: ({ getValue }) => (
-                    <span className="text-foreground">{getValue<string>()}</span>
+                size: 240,
+                header: () => <p className="column-title ml-2">User</p>,
+                cell: ({ row }) => (
+                    <div className="flex items-center gap-2 ml-2">
+                        <Avatar className="size-8">
+                            {row.original.image && (
+                                <AvatarImage src={row.original.image} alt={row.original.name} />
+                            )}
+                            <AvatarFallback>{getInitials(row.original.name)}</AvatarFallback>
+                        </Avatar>
+                        <div className="flex flex-col truncate">
+                            <span className="truncate font-medium text-foreground">{row.original.name}</span>
+                            <span className="text-xs text-muted-foreground truncate">
+                                {row.original.email}
+                            </span>
+                        </div>
+                    </div>
                 ),
-                filterFn: "includesString",
             },
             {
-                id: "totalSubjects",
-                accessorKey: "totalSubjects",
-                size: 160,
-                header: () => <p className="column-title">Subjects</p>,
-                cell: ({ getValue }) => {
-                    const total = getValue<number>();
-                    return <Badge variant="secondary">{total ?? 0}</Badge>;
-                },
-            },
-            {
-                id: "description",
-                accessorKey: "description",
-                size: 320,
-                header: () => <p className="column-title">Description</p>,
-                cell: ({ getValue }) => {
-                    const description = getValue<string>();
-
-                    return description ? (
-                        <span className="truncate line-clamp-2">{description}</span>
-                    ) : (
-                        <span className="text-muted-foreground">No description</span>
-                    );
-                },
+                id: "role",
+                accessorKey: "role",
+                size: 140,
+                header: () => <p className="column-title">Role</p>,
+                cell: ({ getValue }) => (
+                    <Badge variant="secondary">{getValue<string>()}</Badge>
+                ),
             },
             {
                 id: "actions",
@@ -83,7 +73,7 @@ const DepartmentsList = () => {
                 cell: ({ row }) => (
                     <div className="flex items-center gap-2">
                         <ShowButton
-                            resource="departments"
+                            resource="users"
                             recordItemId={row.original.id}
                             variant="outline"
                             size="sm"
@@ -91,7 +81,7 @@ const DepartmentsList = () => {
                             View
                         </ShowButton>
                         <EditButton
-                            resource="departments"
+                            resource="users"
                             recordItemId={row.original.id}
                             variant="outline"
                             size="sm"
@@ -99,7 +89,7 @@ const DepartmentsList = () => {
                             Edit
                         </EditButton>
                         <DeleteButton
-                            resource="departments"
+                            resource="users"
                             recordItemId={row.original.id}
                             variant="outline"
                             size="sm"
@@ -120,18 +110,13 @@ const DepartmentsList = () => {
                 operator: "contains" as const,
                 value: searchQuery,
             },
-            {
-                field: "code",
-                operator: "contains" as const,
-                value: searchQuery,
-            },
         ]
         : [];
 
-    const departmentsTable = useTable<DepartmentListItem>({
-        columns: departmentColumns,
+    const usersTable = useTable<UserListItem>({
+        columns: userColumns,
         refineCoreProps: {
-            resource: "departments",
+            resource: "users",
             pagination: {
                 pageSize: 10,
                 mode: "server",
@@ -142,7 +127,7 @@ const DepartmentsList = () => {
             sorters: {
                 initial: [
                     {
-                        field: "id",
+                        field: "createdAt",
                         order: "desc",
                     },
                 ],
@@ -153,29 +138,29 @@ const DepartmentsList = () => {
     return (
         <ListView>
             <Breadcrumb />
-            <h1 className="page-title">Departments</h1>
+            <h1 className="page-title">Users</h1>
 
             <div className="intro-row">
-                <p>Quick access to essential metrics and management tools.</p>
+                <p>Manage access, view accounts, and assign roles.</p>
 
                 <div className="actions-row">
                     <div className="search-field">
                         <Search className="search-icon" />
                         <Input
                             type="text"
-                            placeholder="Search by name or code..."
+                            placeholder="Search by name or email..."
                             className="pl-10 w-full"
                             value={searchQuery}
                             onChange={(event) => setSearchQuery(event.target.value)}
                         />
                     </div>
-                    <CreateButton resource="departments" />
+                    <CreateButton resource="users" />
                 </div>
             </div>
 
-            <DataTable table={departmentsTable} />
+            <DataTable table={usersTable} />
         </ListView>
     );
 };
 
-export default DepartmentsList;
+export default UsersList;
