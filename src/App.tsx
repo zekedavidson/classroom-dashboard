@@ -1,4 +1,4 @@
-import { Authenticated, GitHubBanner, Refine, WelcomePage } from "@refinedev/core";
+import { AccessControlProvider, Authenticated, GitHubBanner, Refine, WelcomePage } from "@refinedev/core";
 import { DevtoolsPanel, DevtoolsProvider } from "@refinedev/devtools";
 import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
 
@@ -46,6 +46,20 @@ function App() {
             <Refine
               authProvider={authProvider}
               dataProvider={dataProvider}
+              accessControlProvider={{
+                can: async ({ action }) => {
+                  const identity = await authProvider.getIdentity?.();
+                  const role = (identity as any)?.role;
+
+                  if (role === "student") {
+                    if (["create", "edit", "delete"].includes(action)) {
+                      return { can: false, reason: "Unauthorized" };
+                    }
+                  }
+
+                  return { can: true };
+                },
+              }}
               notificationProvider={useNotificationProvider()}
               routerProvider={routerProvider}
               options={{

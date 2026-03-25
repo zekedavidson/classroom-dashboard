@@ -41,7 +41,7 @@ export const EditButton = React.forwardRef<
     const { hidden, disabled, LinkComponent, to, label } = useEditButton({
       resource,
       id: recordItemId,
-      accessControl,
+      accessControl: { hideIfUnauthorized: true, ...accessControl },
       meta,
     });
 
