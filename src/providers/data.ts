@@ -111,6 +111,7 @@ const options: CreateDataProviderOptions = {
   }
 }
 
-const { dataProvider } = createDataProvider(BACKEND_BASE_URL, options, { credentials: 'include' });
+const apiBaseUrl = BACKEND_BASE_URL.replace(/\/+$/, "") + "/api";
+const { dataProvider } = createDataProvider(apiBaseUrl, options, { credentials: 'include' });
 
 export { dataProvider };
